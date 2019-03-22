@@ -11,7 +11,9 @@ public class Atom : MonoBehaviour
     {
         GameObject gameObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
         Atom atom = gameObject.AddComponent<Atom>();
-        atom.Create(pos, gameObject.AddComponent<Rigidbody>());
+        Rigidbody rb = gameObject.AddComponent<Rigidbody>();
+        rb.useGravity = false;
+        atom.Create(pos, rb);
 
         return atom;
     }
