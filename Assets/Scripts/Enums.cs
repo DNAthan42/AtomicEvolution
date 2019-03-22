@@ -12,4 +12,9 @@ public class Enums : MonoBehaviour
     {
         return (Shape)Random.Range(0, 3);
     }
+
+    public static Motion GetRandomMotion()
+    {
+        return (Motion)Random.Range(0, 2);
+    }
 }
