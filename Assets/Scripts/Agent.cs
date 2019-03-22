@@ -24,7 +24,7 @@ public class Agent : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.W))
         {
-            last.z += 1;
+            last += Vector3.forward;
             AddAtom(last);
         }
         if (Input.GetKeyDown(KeyCode.A))
