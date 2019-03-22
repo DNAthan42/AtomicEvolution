@@ -4,28 +4,21 @@ using UnityEngine;
 
 public class Atom : MonoBehaviour
 {
-    private MeshFilter meshFilter;
-    private MeshRenderer meshRenderer;
-    private BoxCollider boxCollider;
+
+    private Rigidbody rb;
 
     public static Atom Create(Vector3 pos)
     {
         GameObject gameObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
         Atom atom = gameObject.AddComponent<Atom>();
-        atom.Create(gameObject.GetComponent<MeshFilter>(), 
-            gameObject.GetComponent<MeshRenderer>(), 
-            gameObject.GetComponent<BoxCollider>(), 
-            pos);
+        atom.Create(pos, gameObject.AddComponent<Rigidbody>());
 
         return atom;
     }
 
-    private void Create(MeshFilter filter, MeshRenderer renderer, BoxCollider collider, Vector3 pos)
+    private void Create(Vector3 pos, Rigidbody rb)
     {
-        meshFilter = filter;
-        meshRenderer = renderer;
-        boxCollider = collider;
-
+        this.rb = rb;
         transform.localPosition = pos;
         transform.localScale *= .5f;
     }

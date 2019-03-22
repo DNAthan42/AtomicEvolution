@@ -17,9 +17,4 @@ public class Agent : MonoBehaviour
         atoms[4, 4, 4] = atom;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
