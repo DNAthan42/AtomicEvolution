@@ -47,8 +47,30 @@ public class Atom : MonoBehaviour
         this.rb = rb;
         this.shape = shape;
         transform.localPosition = pos;
-        transform.localScale *= .5f;
+        Resize();
     }
+
+    private void Resize()
+    {
+        Vector3 prev;
+        switch (shape)
+        {
+            case Enums.Shape.Cube:
+                transform.localScale *= .5f;
+                break;
+            case Enums.Shape.Cylinder:
+                prev = transform.localScale;
+                transform.localScale = new Vector3(prev.x * .75f, prev.y * .3f, prev.z * .75f);
+                break;
+            case Enums.Shape.Sphere:
+                prev = transform.localScale;
+                transform.localScale = new Vector3(prev.x * .95f, prev.y * .95f, prev.z * .95f);
+                break;
+            default:
+                break;
+        }
+    }
+
 
     // Update is called once per frame
     void Update()
