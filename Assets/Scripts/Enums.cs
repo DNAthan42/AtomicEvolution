@@ -8,7 +8,7 @@ public class Enums : MonoBehaviour
 
     public enum Shape { Cube, Sphere, Cylinder };
 
-    public enum Direction { Port, Starboard, Below, Above, Aft, Fore };
+    public enum Direction { None, Port, Starboard, Below, Above, Aft, Fore };
 
     public static Shape GetRandomShape()
     {
@@ -45,6 +45,7 @@ public class Enums : MonoBehaviour
             case (Direction.Fore):
                 z += 1;
                 break;
+            case (Direction.None):
             default:
                 break;
         }

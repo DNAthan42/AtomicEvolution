@@ -15,7 +15,7 @@ public class Atom : MonoBehaviour
     /// </summary>
     /// <param name="pos">index in the atoms array of where to spawn the atom</param>
     /// <returns>The newly generated atom attached to a gameobject</returns>
-    public static Atom Create(Vector3 pos)
+    public static Atom Create(Vector3 pos, Agent agent)
     {
         Enums.Shape shape = Enums.Shape.Cube;
         GameObject gameObject = CreateShape(shape);
@@ -24,7 +24,7 @@ public class Atom : MonoBehaviour
         Rigidbody rb = gameObject.AddComponent<Rigidbody>();
         rb.useGravity = false;
 
-        atom.Create(pos, rb, shape, Enums.Motion.None, null);
+        atom.Create(pos, agent, rb, shape, Enums.Motion.None, Enums.Direction.None);
 
         return atom;
     }
@@ -34,7 +34,7 @@ public class Atom : MonoBehaviour
     /// </summary>
     /// <param name="pos">index in the atoms array of where to spawn the atom</param>
     /// <returns>The newly generated atom attached to a gameobject</returns>
-    public static Atom CreateRandom(Vector3 pos, Atom parent)
+    public static Atom CreateRandom(Vector3 pos, Agent agent, Enums.Direction parent)
     {
         Enums.Shape shape = Enums.GetRandomShape();
         GameObject gameObject = CreateShape(shape);    
@@ -45,7 +45,7 @@ public class Atom : MonoBehaviour
         Rigidbody rb = gameObject.AddComponent<Rigidbody>();
         //rb.useGravity = false;
 
-        atom.Create(pos, rb, shape, motion, parent);
+        atom.Create(pos, agent, rb, shape, motion, parent);
 
         return atom;
     }
@@ -71,6 +71,8 @@ public class Atom : MonoBehaviour
     }
     #endregion
 
+    private Vector3 pos;
+    private Agent agent;
     public Rigidbody rb;
     private Enums.Shape shape;
     private Enums.Motion motion;
@@ -78,12 +80,14 @@ public class Atom : MonoBehaviour
     private float force;
     private Vector3 direction;
 
-    private Atom parent;
+    private Enums.Direction parent;
 
     private HingeJoint joint;
 
-    private void Create(Vector3 pos, Rigidbody rb, Enums.Shape shape, Enums.Motion motion, Atom parent)
+    private void Create(Vector3 pos, Agent agent, Rigidbody rb, Enums.Shape shape, Enums.Motion motion, Enums.Direction parent)
     {
+        this.pos = pos;
+        this.agent = agent;
         this.rb = rb;
         this.shape = shape;
         this.motion = motion;
@@ -120,7 +124,7 @@ public class Atom : MonoBehaviour
 
     private void MakeJoint()
     {
-        if (parent == null) return;
+        if (parent == Enums.Direction.None) return;
 
         joint = gameObject.AddComponent<HingeJoint>();
         switch (motion)
@@ -148,7 +152,7 @@ public class Atom : MonoBehaviour
 
     private void MakeBasicJoint()
     {
-        joint.connectedBody = parent.rb;
+        joint.connectedBody = agent.getParent(pos, parent).rb;
 
         joint.useLimits = true;
         JointLimits limits = joint.limits;
@@ -158,7 +162,7 @@ public class Atom : MonoBehaviour
 
     private void MakeRotationalJoint()
     {
-        joint.connectedBody = parent.rb;
+        joint.connectedBody = agent.getParent(pos, parent).rb;
 
         joint.useMotor = true;
         joint.anchor = Vector3.zero;

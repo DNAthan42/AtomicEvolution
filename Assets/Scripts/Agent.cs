@@ -76,7 +76,7 @@ public class Agent : MonoBehaviour
     {
         foreach (Atom a in atoms) if (a != null) Destroy(a.gameObject);
         center = new Vector3(4, 4, 4);
-        Atom atom = Atom.Create(center);
+        Atom atom = Atom.Create(center, this);
         atoms[4, 4, 4] = atom;
 
         //last = center;
@@ -88,9 +88,15 @@ public class Agent : MonoBehaviour
 
     void sample()
     {
-        atoms[4, 4, 3] = Atom.CreateRandom(new Vector3(4, 4, 3), atoms[4, 4, 4]);
-        atoms[4, 4, 5] = Atom.CreateRandom(new Vector3(4, 4, 5), atoms[4, 4, 4]);
-        atoms[3, 4, 4] = Atom.CreateRandom(new Vector3(3, 4, 4), atoms[4, 4, 4]);
-        atoms[5, 4, 4] = Atom.CreateRandom(new Vector3(5, 4, 4), atoms[4, 4, 4]);
+        atoms[4, 4, 3] = Atom.CreateRandom(new Vector3(4, 4, 3), this, Enums.Direction.Aft);
+        atoms[4, 4, 5] = Atom.CreateRandom(new Vector3(4, 4, 5), this, Enums.Direction.Fore);
+        atoms[3, 4, 4] = Atom.CreateRandom(new Vector3(3, 4, 4), this, Enums.Direction.Port);
+        atoms[5, 4, 4] = Atom.CreateRandom(new Vector3(5, 4, 4), this, Enums.Direction.Starboard);
+    }
+
+    public Atom getParent(Vector3 pos, Enums.Direction direction)
+    {
+        Vector3 parentLoc = Enums.InDirection(pos, direction);
+        return atoms[(int)parentLoc.x, (int)parentLoc.y, (int)parentLoc.z];
     }
 }
