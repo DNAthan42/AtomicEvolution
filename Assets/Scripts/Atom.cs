@@ -34,7 +34,7 @@ public class Atom : MonoBehaviour
     /// </summary>
     /// <param name="pos">index in the atoms array of where to spawn the atom</param>
     /// <returns>The newly generated atom attached to a gameobject</returns>
-    public static Atom Create(Vector3 pos, Atom parent)
+    public static Atom CreateRandom(Vector3 pos, Atom parent)
     {
         Enums.Shape shape = Enums.GetRandomShape();
         GameObject gameObject = CreateShape(shape);    
@@ -203,8 +203,8 @@ public class Atom : MonoBehaviour
 
     private void ChangeForce()
     {
-        //5050 chance to increase or decrease the force by 1/10th of max
-        force += (Random.value < .5) ? -.1f : .1f;
+        //5050 chance to increase or decrease the force by DeltaForce
+        force += (Random.value < .5) ? -DeltaForce : DeltaForce;
     }
 
     private void ChangeDirection()
