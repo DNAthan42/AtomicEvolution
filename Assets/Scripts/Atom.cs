@@ -5,11 +5,6 @@ using UnityEngine;
 public class Atom : MonoBehaviour
 {
     #region statics
-    public static float MaxForce = 100f;
-    public static float MaxTorque = 100f;
-    public static float DeltaForce = .1f;
-    public static int DeltaAngle = 45;
-
     /// <summary>
     /// Create the base atom with no motion
     /// </summary>
@@ -24,7 +19,8 @@ public class Atom : MonoBehaviour
         Rigidbody rb = gameObject.AddComponent<Rigidbody>();
         rb.useGravity = false;
 
-        atom.Create(pos, agent, rb, shape, Enums.Motion.None, Enums.Direction.None);
+        AtomDetails details = new AtomDetails(shape, Enums.Motion.None);
+        atom.Create(agent, rb, pos, Enums.Direction.None, details);
 
         return atom;
     }
@@ -45,7 +41,8 @@ public class Atom : MonoBehaviour
         Rigidbody rb = gameObject.AddComponent<Rigidbody>();
         //rb.useGravity = false;
 
-        atom.Create(pos, agent, rb, shape, motion, parent);
+        AtomDetails details = new AtomDetails(shape, motion);
+        atom.Create(agent, rb, pos, parent, details);
 
         return atom;
     }
@@ -71,32 +68,25 @@ public class Atom : MonoBehaviour
     }
     #endregion
 
-    private Vector3 pos;
     private Agent agent;
     public Rigidbody rb;
-    private Enums.Shape shape;
-    private Enums.Motion motion;
+    private AtomDetails details;
 
-    private float force;
-    private Vector3 direction;
-
+    private Vector3 pos;
     private Enums.Direction parent;
 
     private HingeJoint joint;
 
-    private void Create(Vector3 pos, Agent agent, Rigidbody rb, Enums.Shape shape, Enums.Motion motion, Enums.Direction parent)
+    private void Create(Agent agent, Rigidbody rb, Vector3 pos, Enums.Direction parent, AtomDetails details)
     {
-        this.pos = pos;
         this.agent = agent;
         this.rb = rb;
-        this.shape = shape;
-        this.motion = motion;
+        this.details = details;
+        this.pos = pos;
         this.parent = parent;
+
         transform.localPosition = pos;
         Resize();
-
-        force = .5f;
-        direction = Vector3.forward;
 
         MakeJoint();
     }
@@ -104,7 +94,7 @@ public class Atom : MonoBehaviour
     private void Resize()
     {
         Vector3 prev;
-        switch (shape)
+        switch (details.shape)
         {
             case Enums.Shape.Cube:
                 transform.localScale *= .5f;
@@ -127,7 +117,7 @@ public class Atom : MonoBehaviour
         if (parent == Enums.Direction.None) return;
 
         joint = gameObject.AddComponent<HingeJoint>();
-        switch (motion)
+        switch (details.motion)
         {
             case Enums.Motion.Rotational:
                 MakeRotationalJoint();
@@ -136,10 +126,7 @@ public class Atom : MonoBehaviour
                 MakeLinearJoint();
                 break;
             case Enums.Motion.None:
-                MakeBasicJoint();
-                break;
             default:
-                Destroy(joint);
                 MakeBasicJoint();
                 break;
         }
@@ -166,66 +153,16 @@ public class Atom : MonoBehaviour
 
         joint.useMotor = true;
         joint.anchor = Vector3.zero;
-        joint.axis = direction;
+        joint.axis = details.direction;
         JointMotor motor = joint.motor;
-        motor.targetVelocity = MaxTorque * force;
+        motor.targetVelocity = AtomDetails.MaxTorque * details.force;
         motor.force = 10; //hard coded for now because changing force doesn't have much effect empircally.
         motor.freeSpin = true;
         joint.motor = motor;
     }
 
-    #region Mutation
     public void Mutate()
     {
-        int mType = Random.Range(0, 4);
-        if (mType == 0) //change shape
-        {
-            ChangeShape();
-        }
-        else if (mType == 1)
-        {
-            ChangeForce();
-        }
-        else if (mType == 2)
-        {
-            ChangeDirection();
-        }
-        else
-        {
-            //SpawnChild();
-        }
-
+        details.Mutate();
     }
-
-    private void ChangeShape()
-    {
-        Enums.Shape newShape;
-        do newShape = Enums.GetRandomShape();
-        while (newShape == shape); //new shape must be different then the current one.
-        shape = newShape; //now that newSahpe != shape, update this objects shape
-    }
-
-    private void ChangeForce()
-    {
-        //5050 chance to increase or decrease the force by DeltaForce
-        force += (Random.value < .5) ? -DeltaForce : DeltaForce;
-    }
-
-    private void ChangeDirection()
-    {
-        // choose rotation direction for each axe
-        int xdir, ydir, zdir;
-        do
-        {
-            //foreach axe, get either -1, 0, or 1.
-            xdir = Random.Range(-1, 2);
-            ydir = Random.Range(-1, 2);
-            zdir = Random.Range(-1, 2);
-        }
-        while (xdir == 0 && ydir == 0 && zdir == 0); //Must rotate. if all are 0, no rotation happens
-
-        //apply rotation
-        direction = Quaternion.Euler(xdir * DeltaAngle, ydir * DeltaAngle, zdir * DeltaAngle) * direction;
-    }
-    #endregion
 }
