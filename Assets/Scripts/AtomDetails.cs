@@ -43,18 +43,22 @@ public class AtomDetails : MonoBehaviour
         if (mType == 0) //change shape
         {
             ChangeShape();
+            Debug.Log("Shape");
         }
         else if (mType == 1)
         {
             ChangeForce();
+            Debug.Log("Force");
         }
         else if (mType == 2)
         {
             ChangeDirection();
+            Debug.Log("Direction");
         }
         else
         {
             //SpawnChild();
+            Debug.Log("Child");
         }
 
     }

@@ -89,8 +89,10 @@ public class Agent : MonoBehaviour
                 for (int k = 0; k < AgentSize; k++)
                 {
                     if (atoms[i, j, k] == null) continue;
-                    details[i, j, k] = atoms[i, j, k].details;
+
                     if (atoms[i, j, k].parent == Enums.Direction.None) center = new Vector3(i, j, k);
+                    else atoms[i, j, k].Mutate();
+                    details[i, j, k] = atoms[i, j, k].details;
 
                     Destroy(atoms[i, j, k].gameObject); //clear the array
                 }
