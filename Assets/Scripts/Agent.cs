@@ -12,7 +12,11 @@ public class Agent : MonoBehaviour
     void Start()
     {
         atoms = new Atom[AgentSize, AgentSize, AgentSize];
-        reset();
+        center = new Vector3(4, 4, 4);
+        Atom atom = Atom.Create(center, this);
+        atoms[4, 4, 4] = atom;
+
+        sample();
 
     }
 
@@ -68,22 +72,45 @@ public class Agent : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             reset();
-            foreach (Atom a in atoms) if (a != null) a.Mutate();
+            //foreach (Atom a in atoms) if (a != null) a.Mutate();
         }
     }
 
     void reset()
     {
-        foreach (Atom a in atoms) if (a != null) Destroy(a.gameObject);
-        center = new Vector3(4, 4, 4);
+        AtomDetails[,,] details = new AtomDetails[AgentSize, AgentSize, AgentSize];
+        Vector3 center = Vector3.zero;
+
+        //retrieve the atom details and clear the atoms
+        for (int i = 0; i < AgentSize; i++)
+        {
+            for (int j = 0; j < AgentSize; j++)
+            {
+                for (int k = 0; k < AgentSize; k++)
+                {
+                    if (atoms[i, j, k] == null) continue;
+                    details[i, j, k] = atoms[i, j, k].details;
+                    if (atoms[i, j, k].parent == Enums.Direction.None) center = new Vector3(i, j, k);
+
+                    Destroy(atoms[i, j, k].gameObject); //clear the array
+                }
+            }
+        }
+
+        //recreate the base atom
         Atom atom = Atom.Create(center, this);
-        atoms[4, 4, 4] = atom;
-
-        //last = center;
-        //lastAtom = atom;
-        //atom.rb.constraints = RigidbodyConstraints.FreezeAll;
-
-        sample();
+        atom.details = details[(int)center.x, (int)center.y, (int)center.z];
+        atoms[(int)center.x, (int)center.y, (int)center.z] = atom;
+        for (int i = 0; i < atom.details.children.Length; i++) //create the children
+        {
+            if (atom.details.children[i])
+            {
+                Enums.Direction direction = (Enums.Direction)(i + 1);
+                Vector3 pos = Enums.InDirection(center, direction);
+                Atom child = Atom.Create(pos, this, Enums.Reverse(direction), details[(int)pos.x, (int)pos.y, (int)pos.z]);
+                atoms[(int)pos.x, (int)pos.y, (int)pos.z] = child;
+            }
+        }
     }
 
     void sample()

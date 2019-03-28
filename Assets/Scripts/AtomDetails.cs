@@ -34,6 +34,7 @@ public class AtomDetails : MonoBehaviour
 
         force = .5f;
         direction = Vector3.forward;
+        children = new bool[6];
     }
 
     public void Mutate()

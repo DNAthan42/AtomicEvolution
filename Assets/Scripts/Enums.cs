@@ -52,4 +52,26 @@ public class Enums : MonoBehaviour
 
         return source + new Vector3(x, y, z);
     }
+
+    public static Direction Reverse(Direction direction)
+    {
+        switch (direction)
+        {
+            case Direction.Port:
+                return Direction.Starboard;
+            case Direction.Starboard:
+                return Direction.Port;
+            case Direction.Below:
+                return Direction.Above;
+            case Direction.Above:
+                return Direction.Below;
+            case Direction.Aft:
+                return Direction.Fore;
+            case Direction.Fore:
+                return Direction.Aft;
+            default:
+            case Direction.None:
+                return Direction.None;
+        }
+    }
 }
