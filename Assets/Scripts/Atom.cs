@@ -47,6 +47,17 @@ public class Atom : MonoBehaviour
         return atom;
     }
 
+    public static Atom Create(Vector3 pos, Agent agent, Enums.Direction parent, AtomDetails details)
+    {
+        GameObject gameObject = CreateShape(details.shape);
+        Atom atom = gameObject.AddComponent<Atom>();
+        Rigidbody rb = gameObject.AddComponent<Rigidbody>();
+
+        atom.Create(agent, rb, pos, parent, details);
+
+        return atom;
+    }
+
     private static GameObject CreateShape(Enums.Shape shape)
     {
         GameObject gameObject;
@@ -70,10 +81,10 @@ public class Atom : MonoBehaviour
 
     private Agent agent;
     public Rigidbody rb;
-    private AtomDetails details;
+    public AtomDetails details;
 
     private Vector3 pos;
-    private Enums.Direction parent;
+    public Enums.Direction parent;
 
     private HingeJoint joint;
 
@@ -164,5 +175,9 @@ public class Atom : MonoBehaviour
     public void Mutate()
     {
         details.Mutate();
+    }
+    public void AddChild(Enums.Direction direction)
+    {
+        details.children[(int)direction - 1] = true;
     }
 }

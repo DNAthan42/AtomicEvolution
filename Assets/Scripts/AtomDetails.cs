@@ -16,12 +16,15 @@ public class AtomDetails : MonoBehaviour
     public float force;
     public Vector3 direction;
 
-    public AtomDetails(Enums.Shape shape, Enums.Motion motion, float force, Vector3 direction)
+    public bool[] children;
+
+    public AtomDetails(Enums.Shape shape, Enums.Motion motion, float force, Vector3 direction, bool[] children)
     {
         this.shape = shape;
         this.motion = motion;
         this.force = force;
         this.direction = direction;
+        this.children = children;
     }
 
     public AtomDetails(Enums.Shape shape, Enums.Motion motion)

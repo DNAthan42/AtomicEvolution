@@ -92,6 +92,11 @@ public class Agent : MonoBehaviour
         atoms[4, 4, 5] = Atom.CreateRandom(new Vector3(4, 4, 5), this, Enums.Direction.Aft);
         atoms[3, 4, 4] = Atom.CreateRandom(new Vector3(3, 4, 4), this, Enums.Direction.Starboard);
         atoms[5, 4, 4] = Atom.CreateRandom(new Vector3(5, 4, 4), this, Enums.Direction.Port);
+        Atom center = atoms[4, 4, 4];
+        center.AddChild(Enums.Direction.Aft);
+        center.AddChild(Enums.Direction.Fore);
+        center.AddChild(Enums.Direction.Port);
+        center.AddChild(Enums.Direction.Starboard);
     }
 
     public Atom getParent(Vector3 pos, Enums.Direction direction)
