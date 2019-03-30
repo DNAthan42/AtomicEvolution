@@ -19,67 +19,20 @@ public class Agent : MonoBehaviour
         sample();
 
     }
-
-    //Vector3 last;
-    //Atom lastAtom;
-    //void Update()
-    //{
-    //    if (Input.GetKeyDown(KeyCode.W))
-    //    {
-    //        last += Vector3.forward;
-    //        AddAtom(last);
-    //    }
-    //    if (Input.GetKeyDown(KeyCode.A))
-    //    {
-    //        last.x -= 1;
-    //        AddAtom(last);
-    //    }
-    //    if (Input.GetKeyDown(KeyCode.S))
-    //    {
-    //        last.z -= 1;
-    //        AddAtom(last);
-    //    }
-    //    if (Input.GetKeyDown(KeyCode.D))
-    //    {
-    //        last.x += 1;
-    //        AddAtom(last);
-    //    }
-    //    if (Input.GetKeyDown(KeyCode.R))
-    //    {
-    //        last.y += 1;
-    //        AddAtom(last);
-    //    }
-    //    if (Input.GetKeyDown(KeyCode.F))
-    //    {
-    //        last.y -= 1;
-    //        AddAtom(last);
-    //    }
-
-    //    if (Input.GetKeyDown(KeyCode.Space)) atoms[4, 4, 4].rb.constraints = RigidbodyConstraints.None;
-    //}
-
-    //void AddAtom(Vector3 pos)
-    //{
-    //    if(atoms[(int)pos.x, (int)pos.y, (int)pos.z] == null)
-    //        atoms[(int)pos.x, (int)pos.y, (int)pos.z] = lastAtom = Atom.CreateRandom(pos, lastAtom);
-
-        
-
-    //}
     
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
             reset();
-            //foreach (Atom a in atoms) if (a != null) a.Mutate();
         }
         if (Input.GetKeyDown(KeyCode.S))
         {
-            foreach (Atom atom in atoms)
-            {
-                if (atom != null) Debug.Log(atom.Serialize());
-            }
+            Debug.Log(Serialize());
+            //foreach (Atom atom in atoms)
+            //{
+            //    if (atom != null) Debug.Log(atom.Serialize());
+            //}
         }
     }
 
@@ -139,5 +92,21 @@ public class Agent : MonoBehaviour
     {
         Vector3 parentLoc = Enums.InDirection(pos, direction);
         return atoms[(int)parentLoc.x, (int)parentLoc.y, (int)parentLoc.z];
+    }
+
+    public string Serialize()
+    {
+        string agent = "";
+        bool first = true;
+        for (int i = 0; i < AgentSize; i++)
+            for (int k = 0; k < AgentSize; k++)
+                for (int j = 0; j < AgentSize; j++)
+                {
+                    if (first) first = false;
+                    else agent += ",";
+
+                    if (atoms[i, j, k] != null) agent += atoms[i, j, k].Serialize();
+                }
+        return agent;
     }
 }

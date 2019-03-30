@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class AtomDetails : MonoBehaviour
 {
     public static float DeltaForce = .1f;
@@ -97,5 +98,10 @@ public class AtomDetails : MonoBehaviour
     public string Serialize()
     {
         return JsonUtility.ToJson(this);
+    }
+
+    public static AtomDetails Deserialize(string json)
+    {
+        return JsonUtility.FromJson<AtomDetails>(json);
     }
 }
