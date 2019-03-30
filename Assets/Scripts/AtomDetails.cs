@@ -93,4 +93,21 @@ public class AtomDetails : MonoBehaviour
         //apply rotation
         direction = Quaternion.Euler(xdir * DeltaAngle, ydir * DeltaAngle, zdir * DeltaAngle) * direction;
     }
+
+    public string Serialize()
+    {
+        string json = "{";
+        json += $"\'shape\':{(int)shape},";
+        json += $"\'motion\':{(int)motion},";
+        json += $"\'force\':{force},";
+        json += $"\'direction\':[{direction.x},{direction.y},{direction.z}],";
+        json += $"\'children\':[";
+        foreach (bool b in children)
+        {
+            json += (b) ? "true," : "false,";
+        }
+        json += "]}";
+
+        return json;
+    }
 }

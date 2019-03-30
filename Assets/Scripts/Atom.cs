@@ -180,4 +180,9 @@ public class Atom : MonoBehaviour
     {
         details.children[(int)direction - 1] = true;
     }
+
+    public string Serialize()
+    {
+        return details.Serialize();
+    }
 }

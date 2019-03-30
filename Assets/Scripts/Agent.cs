@@ -74,6 +74,13 @@ public class Agent : MonoBehaviour
             reset();
             //foreach (Atom a in atoms) if (a != null) a.Mutate();
         }
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            foreach (Atom atom in atoms)
+            {
+                if (atom != null) Debug.Log(atom.Serialize());
+            }
+        }
     }
 
     void reset()
