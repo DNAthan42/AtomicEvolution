@@ -96,18 +96,6 @@ public class AtomDetails : MonoBehaviour
 
     public string Serialize()
     {
-        string json = "{";
-        json += $"\'shape\':{(int)shape},";
-        json += $"\'motion\':{(int)motion},";
-        json += $"\'force\':{force},";
-        json += $"\'direction\':[{direction.x},{direction.y},{direction.z}],";
-        json += $"\'children\':[";
-        foreach (bool b in children)
-        {
-            json += (b) ? "true," : "false,";
-        }
-        json += "]}";
-
-        return json;
+        return JsonUtility.ToJson(this);
     }
 }
