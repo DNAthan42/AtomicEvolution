@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class AtomDetails : MonoBehaviour
+public class AtomDetails
 {
     public static float DeltaForce = .1f;
     public static int DeltaAngle = 45;

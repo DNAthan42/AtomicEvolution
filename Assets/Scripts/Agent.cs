@@ -15,11 +15,7 @@ public class Agent : MonoBehaviour
     }
 
     void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            reset();
-        }
+    { 
         if (Input.GetKeyDown(KeyCode.S))
         {
             Debug.Log(Serialize());
@@ -97,20 +93,25 @@ public class Agent : MonoBehaviour
         return agent;
     }
 
-    public static void Deserialize(string f)
+    public static Agent Deserialize(string f)
     {
         string[] pieces = f.Split(';');
         AtomDetails[,,] details = new AtomDetails[AgentSize, AgentSize, AgentSize];
+        int total = 0;
         for (int i = 0; i < AgentSize; i++)
             for (int k = 0; k < AgentSize; k++)
-                for (int j = 0, total = 0; j < AgentSize; j++, total++)
+                for (int j = 0; j < AgentSize; j++)
                 {
-                    if (pieces[total] != "") details[i,j,k] = Atom.Deserialize(pieces[total]);
+                    if (pieces[total] != "")
+                    {
+                        details[i, j, k] = Atom.Deserialize(pieces[total]);
+                    }
+                    total++;
                 }
-        FromDetails(new GameObject("Agent"), details, new Vector3(4,4,4));
+        return FromDetails(new GameObject("Agent"), details, new Vector3(4,4,4));
     }
 
-    public static void FromDetails(GameObject gameObject, AtomDetails[,,] details, Vector3 center)
+    public static Agent FromDetails(GameObject gameObject, AtomDetails[,,] details, Vector3 center)
     {
         Agent agent = gameObject.AddComponent<Agent>();
         agent.center = center;
@@ -127,5 +128,7 @@ public class Agent : MonoBehaviour
                 agent.atoms[(int)pos.x, (int)pos.y, (int)pos.z] = child;
             }
         }
+
+        return agent;
     }
 }

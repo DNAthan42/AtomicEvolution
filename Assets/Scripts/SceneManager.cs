@@ -5,7 +5,7 @@ using UnityEngine;
 public class SceneManager : MonoBehaviour
 {
 
-    public Agent Agent;
+    public Agent agent;
     // Update is called once per frame
 
 
@@ -13,7 +13,13 @@ public class SceneManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Return))
         {
-            Agent.sample();
+            agent.sample();
+        }
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            string thisAgent = agent.Serialize();
+            Destroy(agent.gameObject);
+            agent = Agent.Deserialize(thisAgent);
         }
     }
 }

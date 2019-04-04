@@ -13,7 +13,7 @@ public class Atom : MonoBehaviour
     public static Atom Create(Vector3 pos, Agent agent)
     {
         Enums.Shape shape = Enums.Shape.Cube;
-        GameObject gameObject = CreateShape(shape);
+        GameObject gameObject = CreateShape(shape, agent);
 
         Atom atom = gameObject.AddComponent<Atom>();
         Rigidbody rb = gameObject.AddComponent<Rigidbody>();
@@ -33,7 +33,7 @@ public class Atom : MonoBehaviour
     public static Atom CreateRandom(Vector3 pos, Agent agent, Enums.Direction parent)
     {
         Enums.Shape shape = Enums.GetRandomShape();
-        GameObject gameObject = CreateShape(shape);    
+        GameObject gameObject = CreateShape(shape, agent);    
         
         Enums.Motion motion = Enums.GetRandomMotion();
 
@@ -49,7 +49,7 @@ public class Atom : MonoBehaviour
 
     public static Atom Create(Vector3 pos, Agent agent, Enums.Direction parent, AtomDetails details)
     {
-        GameObject gameObject = CreateShape(details.shape);
+        GameObject gameObject = CreateShape(details.shape, agent);
         Atom atom = gameObject.AddComponent<Atom>();
         Rigidbody rb = gameObject.AddComponent<Rigidbody>();
 
@@ -58,7 +58,7 @@ public class Atom : MonoBehaviour
         return atom;
     }
 
-    private static GameObject CreateShape(Enums.Shape shape)
+    private static GameObject CreateShape(Enums.Shape shape, Agent agent)
     {
         GameObject gameObject;
 
@@ -75,6 +75,7 @@ public class Atom : MonoBehaviour
                 gameObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 break;
         }
+        gameObject.transform.parent = agent.transform;
         return gameObject;
     }
     #endregion
