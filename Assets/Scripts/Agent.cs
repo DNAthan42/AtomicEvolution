@@ -11,15 +11,13 @@ public class Agent : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        atoms = new Atom[AgentSize, AgentSize, AgentSize];
-        center = new Vector3(4, 4, 4);
-        Atom atom = Atom.Create(center, this);
-        atoms[4, 4, 4] = atom;
 
-        sample();
+        atoms = new Atom[AgentSize, AgentSize, AgentSize];
+
+        //sample();
 
     }
-    
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
@@ -60,32 +58,25 @@ public class Agent : MonoBehaviour
         }
 
         //recreate the base atom
-        Atom atom = Atom.Create(center, this);
-        atom.details = details[(int)center.x, (int)center.y, (int)center.z];
-        atoms[(int)center.x, (int)center.y, (int)center.z] = atom;
-        for (int i = 0; i < atom.details.children.Length; i++) //create the children
-        {
-            if (atom.details.children[i])
-            {
-                Enums.Direction direction = (Enums.Direction)(i + 1);
-                Vector3 pos = Enums.InDirection(center, direction);
-                Atom child = Atom.Create(pos, this, Enums.Reverse(direction), details[(int)pos.x, (int)pos.y, (int)pos.z]);
-                atoms[(int)pos.x, (int)pos.y, (int)pos.z] = child;
-            }
-        }
+        Agent.FromDetails(new GameObject("agent"), details, center);
+        Destroy(this.gameObject);
     }
 
-    void sample()
+    public void sample()
     {
+        center = new Vector3(4, 4, 4);
+        Atom atom = Atom.Create(center, this);
+        atoms[4, 4, 4] = atom;
+
         atoms[4, 4, 3] = Atom.CreateRandom(new Vector3(4, 4, 3), this, Enums.Direction.Fore);
         atoms[4, 4, 5] = Atom.CreateRandom(new Vector3(4, 4, 5), this, Enums.Direction.Aft);
         atoms[3, 4, 4] = Atom.CreateRandom(new Vector3(3, 4, 4), this, Enums.Direction.Starboard);
         atoms[5, 4, 4] = Atom.CreateRandom(new Vector3(5, 4, 4), this, Enums.Direction.Port);
-        Atom center = atoms[4, 4, 4];
-        center.AddChild(Enums.Direction.Aft);
-        center.AddChild(Enums.Direction.Fore);
-        center.AddChild(Enums.Direction.Port);
-        center.AddChild(Enums.Direction.Starboard);
+        Atom centerAtom = atoms[4, 4, 4];
+        centerAtom.AddChild(Enums.Direction.Aft);
+        centerAtom.AddChild(Enums.Direction.Fore);
+        centerAtom.AddChild(Enums.Direction.Port);
+        centerAtom.AddChild(Enums.Direction.Starboard);
     }
 
     public Atom getParent(Vector3 pos, Enums.Direction direction)
@@ -103,10 +94,42 @@ public class Agent : MonoBehaviour
                 for (int j = 0; j < AgentSize; j++)
                 {
                     if (first) first = false;
-                    else agent += ",";
+                    else agent += ";";
 
                     if (atoms[i, j, k] != null) agent += atoms[i, j, k].Serialize();
                 }
         return agent;
+    }
+
+    public static void Deserialize(string f)
+    {
+        string[] pieces = f.Split(';');
+        AtomDetails[,,] details = new AtomDetails[AgentSize, AgentSize, AgentSize];
+        for (int i = 0; i < AgentSize; i++)
+            for (int k = 0; k < AgentSize; k++)
+                for (int j = 0, total = 0; j < AgentSize; j++, total++)
+                {
+                    if (pieces[total] != "") details[i,j,k] = Atom.Deserialize(pieces[total]);
+                }
+        FromDetails(new GameObject("Agent"), details, new Vector3(4,4,4));
+    }
+
+    public static void FromDetails(GameObject gameObject, AtomDetails[,,] details, Vector3 center)
+    {
+        Agent agent = gameObject.AddComponent<Agent>();
+        agent.center = center;
+        Atom atom = Atom.Create(center, agent);
+        atom.details = details[(int)center.x, (int)center.y, (int)center.z];
+        agent.atoms[(int)center.x, (int)center.y, (int)center.z] = atom;
+        for (int i = 0; i < atom.details.children.Length; i++) //create the children
+        {
+            if (atom.details.children[i])
+            {
+                Enums.Direction direction = (Enums.Direction)(i + 1);
+                Vector3 pos = Enums.InDirection(center, direction);
+                Atom child = Atom.Create(pos, agent, Enums.Reverse(direction), details[(int)pos.x, (int)pos.y, (int)pos.z]);
+                agent.atoms[(int)pos.x, (int)pos.y, (int)pos.z] = child;
+            }
+        }
     }
 }

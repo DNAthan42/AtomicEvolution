@@ -186,7 +186,7 @@ public class Atom : MonoBehaviour
         return details.Serialize();
     }
 
-    public AtomDetails Deserialize(string json)
+    public static AtomDetails Deserialize(string json)
     {
         return AtomDetails.Deserialize(json);
     }
