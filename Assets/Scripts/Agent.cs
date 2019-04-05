@@ -79,6 +79,30 @@ public class Agent : MonoBehaviour
 
     public string Serialize()
     {
+        return Serialize(atoms);
+    }
+
+    #region Statics
+
+
+    public static string Serialize(Atom[,,] atoms)
+    {
+        string agent = "";
+        bool first = true;
+        for (int i = 0; i < AgentSize; i++)
+            for (int k = 0; k < AgentSize; k++)
+                for (int j = 0; j < AgentSize; j++)
+                {
+                    if (first) first = false;
+                    else agent += ";";
+
+                    if (atoms[i, j, k] != null) agent += atoms[i, j, k].Serialize();
+                }
+        return agent;
+    }
+
+    public static string Serialize(AtomDetails[,,] atoms)
+    {
         string agent = "";
         bool first = true;
         for (int i = 0; i < AgentSize; i++)
@@ -120,20 +144,30 @@ public class Agent : MonoBehaviour
     {
         Agent agent = gameObject.AddComponent<Agent>();
         agent.center = center;
-        Atom atom = Atom.Create(center, agent);
-        atom.details = details[(int)center.x, (int)center.y, (int)center.z];
-        agent.atoms[(int)center.x, (int)center.y, (int)center.z] = atom;
+        agent.FromDetails(details, center);
+
+        return agent;
+    }
+
+    #endregion
+
+    private void FromDetails(AtomDetails[,,] details, Vector3 here, Atom atom = null)
+    {
+        //Used for the initial case, creates the default starter atom
+        if (atom == null) atom = Atom.Create(here, this);
+
+        atom.details = details[(int)here.x, (int)here.y, (int)here.z];
+        atoms[(int)here.x, (int)here.y, (int)here.z] = atom;
         for (int i = 0; i < atom.details.children.Length; i++) //create the children
         {
             if (atom.details.children[i])
             {
                 Enums.Direction direction = (Enums.Direction)(i + 1);
-                Vector3 pos = Enums.InDirection(center, direction);
-                Atom child = Atom.Create(pos, agent, Enums.Reverse(direction), details[(int)pos.x, (int)pos.y, (int)pos.z]);
-                agent.atoms[(int)pos.x, (int)pos.y, (int)pos.z] = child;
+                Vector3 pos = Enums.InDirection(here, direction);
+                Atom child = Atom.Create(pos, this, Enums.Reverse(direction), details[(int)pos.x, (int)pos.y, (int)pos.z]);
+                atoms[(int)pos.x, (int)pos.y, (int)pos.z] = child;
+                FromDetails(details, pos, child);
             }
         }
-
-        return agent;
     }
 }

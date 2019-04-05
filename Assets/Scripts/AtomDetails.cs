@@ -11,6 +11,11 @@ public class AtomDetails
     public static float MaxForce = 100f;
     public static float MaxTorque = 1000f;
 
+    public static AtomDetails CreateRandom()
+    {
+        return new AtomDetails(Enums.GetRandomShape(), Enums.GetRandomMotion());
+    }
+
     public Enums.Shape shape;
     public Enums.Motion motion;
 

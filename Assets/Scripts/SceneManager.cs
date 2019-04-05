@@ -21,5 +21,11 @@ public class SceneManager : MonoBehaviour
             Destroy(agent.gameObject);
             agent = Agent.Deserialize(thisAgent);
         }
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            string thisAgent = agent.Serialize();
+            Destroy(agent.gameObject);
+            agent = Agent.Deserialize(new Mutator(thisAgent).Mutate(new Vector3(4, 4, 4)));
+        }
     }
 }
