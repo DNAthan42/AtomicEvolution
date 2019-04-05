@@ -40,7 +40,7 @@ public class AtomDetails
 
     public void Mutate()
     {
-        int mType = Random.Range(0, 4);
+        int mType = Random.Range(0, 3);
         if (mType == 0) //change shape
         {
             ChangeShape();
@@ -51,15 +51,10 @@ public class AtomDetails
             ChangeForce();
             Debug.Log("Force");
         }
-        else if (mType == 2)
+        else
         {
             ChangeDirection();
             Debug.Log("Direction");
-        }
-        else
-        {
-            //SpawnChild();
-            Debug.Log("Child");
         }
 
     }

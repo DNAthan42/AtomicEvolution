@@ -95,6 +95,11 @@ public class Agent : MonoBehaviour
 
     public static Agent Deserialize(string f)
     {
+        return FromDetails(new GameObject("Agent"), ToDetails(f), new Vector3(4,4,4));
+    }
+
+    public static AtomDetails[,,] ToDetails(string f)
+    {
         string[] pieces = f.Split(';');
         AtomDetails[,,] details = new AtomDetails[AgentSize, AgentSize, AgentSize];
         int total = 0;
@@ -108,7 +113,7 @@ public class Agent : MonoBehaviour
                     }
                     total++;
                 }
-        return FromDetails(new GameObject("Agent"), details, new Vector3(4,4,4));
+        return details;
     }
 
     public static Agent FromDetails(GameObject gameObject, AtomDetails[,,] details, Vector3 center)
