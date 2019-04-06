@@ -15,7 +15,7 @@ public class EvolutionManager : MonoBehaviour
     #region Single HillClimb
     public void SingleHillClimb(string candidate)
     {
-        if (agent != null) Destroy(agent.gameObject); //safety check
+        if (agent != null) Agent.Kill(agent); //safety check
         agent = Agent.Deserialize(candidate); //make the agent
         agent.StartTracking(SingleHillClimbEval);
     }
@@ -34,14 +34,13 @@ public class EvolutionManager : MonoBehaviour
     }
     #endregion
 
-
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Return))
         {
             Agent agent = Agent.BasicAgent();
             string basic = agent.Serialize();
-            Destroy(agent.gameObject);
+            Agent.Kill(agent);
 
             SingleHillClimb(basic);
         }
