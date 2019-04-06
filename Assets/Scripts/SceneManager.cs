@@ -9,6 +9,8 @@ public class SceneManager : MonoBehaviour
     // Update is called once per frame
 
 
+
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Return))
@@ -26,6 +28,9 @@ public class SceneManager : MonoBehaviour
             string thisAgent = agent.Serialize();
             Destroy(agent.gameObject);
             agent = Agent.Deserialize(new Mutator(thisAgent).Mutate(new Vector3(4, 4, 4)));
+            agent.StartTracking();
         }
     }
+
+    
 }

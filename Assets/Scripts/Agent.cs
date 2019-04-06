@@ -8,6 +8,10 @@ public class Agent : MonoBehaviour
     private Atom[,,] atoms = new Atom[AgentSize, AgentSize, AgentSize];
     private Vector3 center;
 
+    private Vector3 lastPosition = Vector3.zero;
+    private double totalDistance = 0;
+    private bool tracking = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -24,6 +28,28 @@ public class Agent : MonoBehaviour
             //    if (atom != null) Debug.Log(atom.Serialize());
             //}
         }
+
+        if (tracking)
+        {
+            Vector3 thisPosition = GetHeadPos();
+            totalDistance += Vector3.Distance(lastPosition, thisPosition);
+            lastPosition = thisPosition;
+        }
+    }
+    
+    public void StartTracking()
+    {
+        tracking = true;
+        lastPosition = GetHeadPos();
+        StartCoroutine(WaitForDistance());
+    }
+
+    IEnumerator WaitForDistance()
+    {
+        Debug.Log("Tracking agent");
+        yield return new WaitForSeconds(15);
+        Debug.Log($"Distance: {totalDistance}");
+        tracking = false;
     }
 
     void reset()
@@ -80,6 +106,11 @@ public class Agent : MonoBehaviour
     public string Serialize()
     {
         return Serialize(atoms);
+    }
+
+    public Vector3 GetHeadPos()
+    {
+        return atoms[(int)center.x, (int)center.y, (int)center.z].transform.position;
     }
 
     #region Statics
