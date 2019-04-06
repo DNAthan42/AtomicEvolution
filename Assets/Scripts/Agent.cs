@@ -16,7 +16,7 @@ public class Agent : MonoBehaviour
     private double totalDistance = 0;
     private bool tracking = false;
 
-    public delegate void DistanceCallback(double distance);
+    public delegate void DistanceCallback(double distance, int id);
 
     void Update()
     { 
@@ -49,7 +49,7 @@ public class Agent : MonoBehaviour
     {
         //Debug.Log("Tracking agent");
         yield return new WaitForSeconds(15);
-        distanceCallback(totalDistance);
+        distanceCallback(totalDistance, id);
         tracking = false;
         totalDistance = 0;
     }

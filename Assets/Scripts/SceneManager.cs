@@ -30,7 +30,7 @@ public class SceneManager : MonoBehaviour
     double prev = 0;
     string prevAgent = "";
 
-    void SimpleRunnerMeasurer(double distance)
+    void SimpleRunnerMeasurer(double distance, int id)
     {
         Debug.Log($"Distance: {distance}");
         if (distance > prev)
