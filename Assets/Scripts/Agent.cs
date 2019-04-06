@@ -4,7 +4,11 @@ using UnityEngine;
 
 public class Agent : MonoBehaviour
 {
+    private static int GenerationSize = 8;
+    private static Agent[] Generation = new Agent[GenerationSize];
     private static int AgentSize = 9;
+
+    private int id;
     private Atom[,,] atoms = new Atom[AgentSize, AgentSize, AgentSize];
     private Vector3 center;
 
@@ -13,12 +17,6 @@ public class Agent : MonoBehaviour
     private bool tracking = false;
 
     public delegate void DistanceCallback(double distance);
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
 
     void Update()
     { 
@@ -80,7 +78,7 @@ public class Agent : MonoBehaviour
         }
 
         //recreate the base atom
-        Agent.FromDetails(new GameObject("agent"), details, center);
+        Agent.FromDetails(CreateAgentGameObject(), details, center);
         Destroy(this.gameObject);
     }
 
@@ -159,7 +157,7 @@ public class Agent : MonoBehaviour
 
     public static Agent Deserialize(string f)
     {
-        return FromDetails(new GameObject("Agent"), ToDetails(f), new Vector3(4,4,4));
+        return FromDetails(CreateAgentGameObject(), ToDetails(f), new Vector3(4,4,4));
     }
 
     public static AtomDetails[,,] ToDetails(string f)
@@ -180,9 +178,8 @@ public class Agent : MonoBehaviour
         return details;
     }
 
-    public static Agent FromDetails(GameObject gameObject, AtomDetails[,,] details, Vector3 center)
+    public static Agent FromDetails(Agent agent, AtomDetails[,,] details, Vector3 center)
     {
-        Agent agent = gameObject.AddComponent<Agent>();
         agent.center = center;
         agent.FromDetails(details, center);
 
@@ -191,10 +188,36 @@ public class Agent : MonoBehaviour
 
     public static Agent BasicAgent()
     {
-        GameObject gameObject = new GameObject("Agent");
-        Agent agent = gameObject.AddComponent<Agent>();
+        Agent agent = CreateAgentGameObject();
         agent.CreateBasicAgent();
         return agent;
+    }
+
+    private static Agent CreateAgentGameObject()
+    {
+
+        int id = 0;
+
+        for (int i = 0; i < GenerationSize; i++)
+        {
+            if (Generation[i] == null)
+            {
+                id = i;
+                break;
+            }
+        }
+        GameObject go = new GameObject($"Agent {id}");
+        go.layer = id + 8; //The first 8 layers have uses in unity, avoid them.
+
+        Agent agent = go.AddComponent<Agent>();
+        Generation[id] = agent;
+        return agent;
+    }
+
+    public static void Kill(Agent agent)
+    {
+        Generation[agent.id] = null;
+        Destroy(agent.gameObject);
     }
 
     #endregion
