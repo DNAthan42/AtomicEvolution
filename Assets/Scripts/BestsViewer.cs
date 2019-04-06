@@ -70,7 +70,7 @@ public class BestsViewer : MonoBehaviour
     void ShowCurrent()
     {
         //check if there's an existing agent
-        if (agent != null) Destroy(agent.gameObject);
+        if (agent != null) Agent.Kill(agent);
 
         agent = Agent.Deserialize(agentlist[i]); //get the agent from file. 
         //Replays should be formatted such that only one serialized agent exist on one line

@@ -18,13 +18,13 @@ public class SceneManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             string thisAgent = agent.Serialize();
-            Destroy(agent.gameObject);
+            Agent.Kill(agent);
             agent = Agent.Deserialize(thisAgent);
         }
         if (Input.GetKeyDown(KeyCode.M))
         {
             string thisAgent = agent.Serialize();
-            Destroy(agent.gameObject);
+            Agent.Kill(agent);
             agent = Agent.Deserialize(new Mutator(thisAgent).Mutate(new Vector3(4, 4, 4)));
             agent.StartTracking(DisplayDistance);
         }
@@ -67,7 +67,7 @@ public class SceneManager : MonoBehaviour
     void SimpleRunner()
     {
         string thisAgent = agent.Serialize();
-        Destroy(agent.gameObject);
+        Agent.Kill(agent);
         agent = Agent.Deserialize(new Mutator(thisAgent).Mutate(new Vector3(4, 4, 4)));
         agent.StartTracking(SimpleRunnerMeasurer);
     }
