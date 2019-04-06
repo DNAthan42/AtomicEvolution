@@ -117,6 +117,11 @@ public class Agent : MonoBehaviour
         return atoms[(int)center.x, (int)center.y, (int)center.z].transform.position;
     }
 
+    public void AddTrail()
+    {
+        atoms[(int)center.x, (int)center.y, (int)center.z].AddTrail();
+    }
+
     #region Statics
 
 
