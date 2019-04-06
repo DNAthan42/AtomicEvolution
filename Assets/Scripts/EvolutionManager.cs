@@ -26,7 +26,7 @@ public class EvolutionManager : MonoBehaviour
         {
             bestDist = distance;
             best = agent.Serialize();
-            allbests += best + "\n\n";
+            allbests += best + "\n";
         }
 
         SingleHillClimb(new Mutator(best).Mutate(new Vector3(4, 4, 4)));
