@@ -11,23 +11,6 @@ public class SceneManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Return))
-        {
-            agent.sample();
-        }
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            string thisAgent = agent.Serialize();
-            Agent.Kill(agent);
-            agent = Agent.Deserialize(thisAgent);
-        }
-        if (Input.GetKeyDown(KeyCode.M))
-        {
-            string thisAgent = agent.Serialize();
-            Agent.Kill(agent);
-            agent = Agent.Deserialize(new Mutator(thisAgent).Mutate(new Vector3(4, 4, 4)));
-            agent.StartTracking(DisplayDistance);
-        }
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             prev = 0;

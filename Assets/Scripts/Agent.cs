@@ -54,51 +54,6 @@ public class Agent : MonoBehaviour
         totalDistance = 0;
     }
 
-    void reset()
-    {
-        AtomDetails[,,] details = new AtomDetails[AgentSize, AgentSize, AgentSize];
-        Vector3 center = Vector3.zero;
-
-        //retrieve the atom details and clear the atoms
-        for (int i = 0; i < AgentSize; i++)
-        {
-            for (int j = 0; j < AgentSize; j++)
-            {
-                for (int k = 0; k < AgentSize; k++)
-                {
-                    if (atoms[i, j, k] == null) continue;
-
-                    if (atoms[i, j, k].parent == Enums.Direction.None) center = new Vector3(i, j, k);
-                    else atoms[i, j, k].Mutate();
-                    details[i, j, k] = atoms[i, j, k].details;
-
-                    Destroy(atoms[i, j, k].gameObject); //clear the array
-                }
-            }
-        }
-
-        //recreate the base atom
-        Agent.FromDetails(CreateAgentGameObject(), details, center);
-        Destroy(this.gameObject);
-    }
-
-    public void sample()
-    {
-        center = new Vector3(4, 4, 4);
-        Atom atom = Atom.Create(center, this);
-        atoms[4, 4, 4] = atom;
-
-        atoms[4, 4, 3] = Atom.CreateRandom(new Vector3(4, 4, 3), this, Enums.Direction.Fore);
-        atoms[4, 4, 5] = Atom.CreateRandom(new Vector3(4, 4, 5), this, Enums.Direction.Aft);
-        atoms[3, 4, 4] = Atom.CreateRandom(new Vector3(3, 4, 4), this, Enums.Direction.Starboard);
-        atoms[5, 4, 4] = Atom.CreateRandom(new Vector3(5, 4, 4), this, Enums.Direction.Port);
-        Atom centerAtom = atoms[4, 4, 4];
-        centerAtom.AddChild(Enums.Direction.Aft);
-        centerAtom.AddChild(Enums.Direction.Fore);
-        centerAtom.AddChild(Enums.Direction.Port);
-        centerAtom.AddChild(Enums.Direction.Starboard);
-    }
-
     public Atom getParent(Vector3 pos, Enums.Direction direction)
     {
         Vector3 parentLoc = Enums.InDirection(pos, direction);
