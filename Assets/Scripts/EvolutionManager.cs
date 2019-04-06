@@ -50,4 +50,17 @@ public class EvolutionManager : MonoBehaviour
 
         }
     }
+
+    IEnumerator HourlyLog(string pathAddition)
+    {
+        Directory.CreateDirectory($"out/{pathAddition}");
+
+        while (true)
+        {
+            yield return new WaitForSeconds(3600); //waits an hour before the rest of the code is called.
+            Debug.Log($"Creating Record Log at: out/{pathAddition}/{System.DateTime.Now.ToBinary()}");
+            StreamWriter writer = new StreamWriter(File.Create($"out/{System.DateTime.Now.ToBinary()}"));
+            writer.Write(allbests);
+        }
+    }
 }
