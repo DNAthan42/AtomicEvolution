@@ -49,17 +49,17 @@ public class AtomDetails
         if (mType == 0) //change shape
         {
             ChangeShape();
-            Debug.Log("Shape");
+            //Debug.Log("Shape");
         }
         else if (mType == 1)
         {
             ChangeForce();
-            Debug.Log("Force");
+            //Debug.Log("Force");
         }
         else
         {
             ChangeDirection();
-            Debug.Log("Direction");
+            //Debug.Log("Direction");
         }
 
     }

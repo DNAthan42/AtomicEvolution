@@ -12,6 +12,8 @@ public class Agent : MonoBehaviour
     private double totalDistance = 0;
     private bool tracking = false;
 
+    public delegate void DistanceCallback(double distance);
+
     // Start is called before the first frame update
     void Start()
     {
@@ -37,20 +39,21 @@ public class Agent : MonoBehaviour
         }
     }
     
-    public void StartTracking()
+    public void StartTracking(DistanceCallback distanceCallback)
     {
         tracking = true;
         lastPosition = GetHeadPos();
         atoms[(int)center.x, (int)center.y, (int)center.z].AddTrail();
-        StartCoroutine(WaitForDistance());
+        StartCoroutine(WaitForDistance(distanceCallback));
     }
 
-    IEnumerator WaitForDistance()
+    IEnumerator WaitForDistance(DistanceCallback distanceCallback)
     {
-        Debug.Log("Tracking agent");
+        //Debug.Log("Tracking agent");
         yield return new WaitForSeconds(15);
-        Debug.Log($"Distance: {totalDistance}");
+        distanceCallback(totalDistance);
         tracking = false;
+        totalDistance = 0;
     }
 
     void reset()
