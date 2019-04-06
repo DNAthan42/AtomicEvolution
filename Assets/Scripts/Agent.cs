@@ -184,6 +184,14 @@ public class Agent : MonoBehaviour
         return agent;
     }
 
+    public static Agent BasicAgent()
+    {
+        GameObject gameObject = new GameObject("Agent");
+        Agent agent = gameObject.AddComponent<Agent>();
+        agent.CreateBasicAgent();
+        return agent;
+    }
+
     #endregion
 
     private void FromDetails(AtomDetails[,,] details, Vector3 here, Atom atom = null)
@@ -204,5 +212,16 @@ public class Agent : MonoBehaviour
                 FromDetails(details, pos, child);
             }
         }
+    }
+
+    private void CreateBasicAgent()
+    {
+        center = new Vector3(4, 4, 4);
+        Atom atom = Atom.Create(center, this);
+        atoms[4, 4, 4] = atom;
+        atoms[4, 4, 4].AddChild(Enums.Direction.Aft);
+
+        atoms[4, 4, 3] = Atom.CreateRandom(new Vector3(4, 4, 3), this, Enums.Direction.Fore);
+
     }
 }
