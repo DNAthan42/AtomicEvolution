@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class EvolutionManager : MonoBehaviour
@@ -8,6 +9,8 @@ public class EvolutionManager : MonoBehaviour
     private double bestDist;
 
     private Agent agent;
+
+    private string allbests = "";
 
     public void SingleHillClimb(string candidate)
     {
@@ -23,6 +26,7 @@ public class EvolutionManager : MonoBehaviour
         {
             bestDist = distance;
             best = agent.Serialize();
+            allbests += best + "\n\n";
         }
 
         SingleHillClimb(new Mutator(best).Mutate(new Vector3(4, 4, 4)));
@@ -37,6 +41,13 @@ public class EvolutionManager : MonoBehaviour
             Destroy(agent.gameObject);
 
             SingleHillClimb(basic);
+        }
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Debug.Log($"Creating Record Log at: out/{System.DateTime.Now.ToBinary()}");
+            StreamWriter writer = new StreamWriter(File.Create($"out/{System.DateTime.Now.ToBinary()}"));
+            writer.Write(allbests);
+
         }
     }
 }
