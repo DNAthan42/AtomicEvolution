@@ -45,21 +45,22 @@ public class AtomDetails
 
     public void Mutate()
     {
-        int mType = Random.Range(0, 3);
+        int mType = Random.Range(0, 4);
         if (mType == 0) //change shape
         {
             ChangeShape();
-            //Debug.Log("Shape");
         }
         else if (mType == 1)
         {
             ChangeForce();
-            //Debug.Log("Force");
         }
-        else
+        else if (mType == 2)
         {
             ChangeDirection();
-            //Debug.Log("Direction");
+        }
+        else if (mType == 3)
+        {
+            ChangeMotion();
         }
 
     }
@@ -93,6 +94,14 @@ public class AtomDetails
 
         //apply rotation
         direction = Quaternion.Euler(xdir * DeltaAngle, ydir * DeltaAngle, zdir * DeltaAngle) * direction;
+    }
+
+    private void ChangeMotion()
+    {
+        Enums.Motion newMotion;
+        do newMotion = Enums.GetRandomMotion();
+        while (newMotion == motion); //new motion must be different then the current one.
+        motion = newMotion;
     }
 
     public string Serialize()
