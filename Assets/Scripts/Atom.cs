@@ -191,4 +191,18 @@ public class Atom : MonoBehaviour
     {
         return AtomDetails.Deserialize(json);
     }
+
+    public void AddTrail()
+    {
+        TrailRenderer trail = gameObject.AddComponent<TrailRenderer>();
+        trail.material.shader = Shader.Find("Particles/Standard Surface");
+        trail.startWidth = .1f;
+        trail.startColor = Color.red;
+        trail.endWidth = 0;
+        trail.endColor = Color.black;
+
+        trail.time = 2.5f;
+
+
+    }
 }

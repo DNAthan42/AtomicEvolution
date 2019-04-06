@@ -41,6 +41,7 @@ public class Agent : MonoBehaviour
     {
         tracking = true;
         lastPosition = GetHeadPos();
+        atoms[(int)center.x, (int)center.y, (int)center.z].AddTrail();
         StartCoroutine(WaitForDistance());
     }
 
