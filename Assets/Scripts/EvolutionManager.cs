@@ -6,12 +6,17 @@ using UnityEngine;
 
 public class EvolutionManager : MonoBehaviour
 {
+    private static string DatePattern = "MMddHHmmssff";
+
     private string best;
     private double bestDist;
 
     private Agent agent;
 
     private string allbests = "";
+
+    private List<string> genDetails;
+    private string logPath;
 
     private int gen = 0;
 
@@ -45,6 +50,11 @@ public class EvolutionManager : MonoBehaviour
     public void MultiHillClimb(int genSize)
     {
         agents = new Agent[genSize];
+        genDetails = new List<string>();
+
+        //create the log folder
+        string logFolder = System.DateTime.Now.ToString(DatePattern);
+        StartCoroutine(ReugularLog(1800, logFolder));
 
         //create the start point
         Agent agent = Agent.BasicAgent();
@@ -82,6 +92,7 @@ public class EvolutionManager : MonoBehaviour
             double bestReported = 0;
             int bestId = 0; //if none are better, reuse the parent (this should always happen algorithmically but w/e)
 
+            //find the best reported distance this generation
             for (int i = 0; i < distances.Length; i++)
             {
                 if (distances[i] > bestReported)
@@ -91,6 +102,8 @@ public class EvolutionManager : MonoBehaviour
                 }
             }
 
+
+            
             if (bestReported > bestDist)
             {
                 bestDist = bestReported;
@@ -129,24 +142,46 @@ public class EvolutionManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        Log();
+        LogBests();
     }
 
-    IEnumerator HourlyLog(string pathAddition)
+    IEnumerator ReugularLog(int seconds, string pathAddition, bool useGen = true)
     {
         Directory.CreateDirectory($"out/{pathAddition}");
 
         while (true)
         {
-            yield return new WaitForSeconds(3600); //waits an hour before the rest of the code is called.
-            Debug.Log($"Creating Record Log at: out/{System.DateTime.Now.ToBinary()}");
-            Log();
+            yield return new WaitForSeconds(seconds); //waits an hour before the rest of the code is called.
+            if (useGen)
+            {
+                string logFile = System.DateTime.Now.ToString(DatePattern) + ".genlog";
+                Debug.Log($"Dumping logs to out/{pathAddition}/{logFile}");
+                StreamWriter writer = new StreamWriter(File.Create($"out/{pathAddition}/{logFile}"));
+                foreach (string line in genDetails)
+                {
+                    writer.WriteLine(line);
+                }
+                writer.Close();
+            }
+            else
+            {
+                Debug.Log($"Creating Record Log at: out/{System.DateTime.Now.ToBinary()}");
+                LogBests();
+            }
         }
     }
 
-    private void Log()
+    private void LogBests()
     {
         StreamWriter writer = new StreamWriter(File.Create($"out/{System.DateTime.Now.ToBinary()}"));
         writer.Write(allbests);
+        writer.Close();
+    }
+
+    private void LogGen(double distance, double average = -1, string newBest = "")
+    {
+        //using # as a delimiter since commas are used in the serializer
+        string line = $"{gen++}#{distance}#{average}#{newBest}";
+        genDetails.Add(line);
     }
 }
