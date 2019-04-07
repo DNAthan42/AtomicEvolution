@@ -98,9 +98,9 @@ public class EvolutionManager : MonoBehaviour
                 allbests += best + "\n";
                 Debug.Log($"New Best Distance: {bestDist}");
             }
+            MultiHillClimb(best);
         }
 
-        MultiHillClimb(best);
     }
     #endregion
 

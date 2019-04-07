@@ -76,6 +76,7 @@ public class Atom : MonoBehaviour
                 break;
         }
         gameObject.transform.parent = agent.transform;
+        gameObject.layer = agent.id + 8;
         return gameObject;
     }
     #endregion

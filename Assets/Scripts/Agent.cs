@@ -8,7 +8,7 @@ public class Agent : MonoBehaviour
     private static Agent[] Generation = new Agent[GenerationSize];
     private static int AgentSize = 9;
 
-    private int id;
+    public int id;
     private Atom[,,] atoms = new Atom[AgentSize, AgentSize, AgentSize];
     private Vector3 center;
 
@@ -165,6 +165,7 @@ public class Agent : MonoBehaviour
         go.layer = id + 8; //The first 8 layers have uses in unity, avoid them.
 
         Agent agent = go.AddComponent<Agent>();
+        agent.id = id;
         Generation[id] = agent;
         return agent;
     }
