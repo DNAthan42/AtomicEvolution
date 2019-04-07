@@ -65,7 +65,7 @@ public class Atom : MonoBehaviour
         switch (shape)
         {
             case Enums.Shape.Cylinder:
-                gameObject = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                gameObject = GameObject.CreatePrimitive(PrimitiveType.Capsule);
                 break;
             case Enums.Shape.Sphere:
                 gameObject = GameObject.CreatePrimitive(PrimitiveType.Sphere);
@@ -114,7 +114,7 @@ public class Atom : MonoBehaviour
                 break;
             case Enums.Shape.Cylinder:
                 prev = transform.localScale;
-                transform.localScale = new Vector3(prev.x * .75f, prev.y * .3f, prev.z * .75f);
+                transform.localScale = new Vector3(prev.x * .75f, prev.y * .6f, prev.z * .75f);
                 break;
             case Enums.Shape.Sphere:
                 prev = transform.localScale;

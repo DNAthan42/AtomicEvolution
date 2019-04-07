@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Mutator
 {
-    public static float ExpansionRate = .1f;
+    public static float ExpansionRate = .25f;
     public static float PointMutationRate = .25f;
 
     private AtomDetails[,,] details;
