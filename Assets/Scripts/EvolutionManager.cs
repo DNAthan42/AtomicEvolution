@@ -16,7 +16,7 @@ public class EvolutionManager : MonoBehaviour
     private string allbests = "";
 
     private List<string> genDetails;
-    private string logPath;
+    private string logPath = "";
 
     private int gen = 0;
 
@@ -25,6 +25,9 @@ public class EvolutionManager : MonoBehaviour
     {
         if (agent != null) Agent.Kill(agent); //safety check
         agent = Agent.Deserialize(candidate); //make the agent
+
+        StartCoroutine(RegularLog(1800, false));
+
         agent.StartTracking(SingleHillClimbEval);
     }
 
@@ -53,8 +56,8 @@ public class EvolutionManager : MonoBehaviour
         genDetails = new List<string>();
 
         //create the log folder
-        string logFolder = System.DateTime.Now.ToString(DatePattern);
-        StartCoroutine(ReugularLog(1800, logFolder));
+        logPath = System.DateTime.Now.ToString(DatePattern);
+        StartCoroutine(RegularLog(1800));
 
         //create the start point
         Agent agent = Agent.BasicAgent();
@@ -90,19 +93,20 @@ public class EvolutionManager : MonoBehaviour
         if (reports == agents.Length)
         {
             double bestReported = 0;
+            double average = 0;
             int bestId = 0; //if none are better, reuse the parent (this should always happen algorithmically but w/e)
 
-            //find the best reported distance this generation
+            //find the best reported and average distance this generation
             for (int i = 0; i < distances.Length; i++)
             {
+                average += distances[i];
                 if (distances[i] > bestReported)
                 {
                     bestReported = distances[i];
                     bestId = i;
                 }
             }
-
-
+            average /= reports;
             
             if (bestReported > bestDist)
             {
@@ -110,6 +114,12 @@ public class EvolutionManager : MonoBehaviour
                 best = agents[bestId].Serialize();
                 allbests += best + "\n";
                 Debug.Log($"New Best Distance: {bestDist}");
+
+                LogGen(bestReported, average, best);
+            }
+            else
+            {
+                LogGen(bestReported, average);
             }
             MultiHillClimb(best);
         }
@@ -143,25 +153,20 @@ public class EvolutionManager : MonoBehaviour
     private void OnDestroy()
     {
         LogBests();
+        LogAllGens();
     }
 
-    IEnumerator ReugularLog(int seconds, string pathAddition, bool useGen = true)
+    IEnumerator RegularLog(int seconds, bool useGen = true)
     {
-        Directory.CreateDirectory($"out/{pathAddition}");
+        if (!Directory.Exists($"out/{logPath}"))
+            Directory.CreateDirectory($"out/{logPath}");
 
         while (true)
         {
             yield return new WaitForSeconds(seconds); //waits an hour before the rest of the code is called.
             if (useGen)
             {
-                string logFile = System.DateTime.Now.ToString(DatePattern) + ".genlog";
-                Debug.Log($"Dumping logs to out/{pathAddition}/{logFile}");
-                StreamWriter writer = new StreamWriter(File.Create($"out/{pathAddition}/{logFile}"));
-                foreach (string line in genDetails)
-                {
-                    writer.WriteLine(line);
-                }
-                writer.Close();
+                LogAllGens();
             }
             else
             {
@@ -173,8 +178,28 @@ public class EvolutionManager : MonoBehaviour
 
     private void LogBests()
     {
-        StreamWriter writer = new StreamWriter(File.Create($"out/{System.DateTime.Now.ToBinary()}"));
+        if (!Directory.Exists($"out/{logPath}"))
+            Directory.CreateDirectory($"out/{logPath}");
+
+        StreamWriter writer = new StreamWriter(File.Create($"out/{logPath}/{System.DateTime.Now.ToBinary()}"));
         writer.Write(allbests);
+        writer.Close();
+    }
+
+    private void LogAllGens()
+    {
+        if (!Directory.Exists($"out/{logPath}"))
+            Directory.CreateDirectory($"out/{logPath}");
+
+        string logFile = System.DateTime.Now.ToString(DatePattern) + ".genlog";
+        Debug.Log($"Dumping logs to out/{logPath}/{logFile}");
+
+        //create and write the file
+        StreamWriter writer = new StreamWriter(File.Create($"out/{logPath}/{logFile}"));
+        foreach (string line in genDetails)
+        {
+            writer.WriteLine(line);
+        }
         writer.Close();
     }
 
