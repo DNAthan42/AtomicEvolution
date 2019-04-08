@@ -11,6 +11,8 @@ public class BestsViewer : MonoBehaviour
 
     private Agent agent;
 
+    private Agent[] agents = new Agent[4];
+
     private int i;
 
     void Start()
@@ -46,6 +48,13 @@ public class BestsViewer : MonoBehaviour
         {
             ShowPrev();
         }
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                if (agents[j] != null) Agent.Kill(agents[j]);
+            }
+        }
     }
 
     void ShowNext()
@@ -75,14 +84,20 @@ public class BestsViewer : MonoBehaviour
 
     void ShowCurrent()
     {
-        //check if there's an existing agent
-        if (agent != null) Agent.Kill(agent);
+        for (int j = 0; j < 4; j++)
+        {
+            //check if there's an existing agent
+            if (agents[j] != null) Agent.Kill(agents[j]);
 
-        agent = Agent.Deserialize(agentlist[i]); //get the agent from file. 
-        //Replays should be formatted such that only one serialized agent exist on one line
+            agents[j] = Agent.Deserialize(agentlist[i]); //get the agent from file. 
+            //Replays should be formatted such that only one serialized agent exist on one line
 
-        //add the trail to the leading atom, should refactor this to atom creating
-        agent.AddTrail();
+            //add the trail to the leading atom, should refactor this to atom creating
+            agents[j].AddTrail();
+        }
+
+
+
 
         Debug.Log($"Generation {i} of {agentlist.Length}");
 
