@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Math = System.Math;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,10 +7,12 @@ using UnityEngine;
 public class AtomDetails
 {
     public static float DeltaForce = .1f;
-    public static int DeltaAngle = 45;
+    public static float DeltaAngle = 45;
 
     public static float MaxForce = 100f;
     public static float MaxTorque = 1000f;
+
+    private static int floatPrecision = 5;
 
     public static AtomDetails CreateRandom()
     {
@@ -19,8 +22,17 @@ public class AtomDetails
     public Enums.Shape shape;
     public Enums.Motion motion;
 
-    public float force;
-    public Vector3 direction;
+    [SerializeField] private float force;
+    public float Force { get => force;  set => force = (float)Math.Round(value, floatPrecision); }
+
+    [SerializeField] private Vector3 direction;
+    public Vector3 Direction
+    {
+        get => direction;
+        set => direction = new Vector3( (float)Math.Round(value.x, floatPrecision),
+                                        (float)Math.Round(value.y, floatPrecision),
+                                        (float)Math.Round(value.z, floatPrecision));
+    }
 
     public bool[] children;
 
@@ -29,7 +41,7 @@ public class AtomDetails
         this.shape = shape;
         this.motion = motion;
         this.force = force;
-        this.direction = direction;
+        this.Direction = direction;
         this.children = children;
     }
 
@@ -39,7 +51,7 @@ public class AtomDetails
         this.motion = motion;
 
         force = .5f;
-        direction = Vector3.forward;
+        Direction = Vector3.forward;
         children = new bool[6];
     }
 
@@ -93,7 +105,7 @@ public class AtomDetails
         while (xdir == 0 && ydir == 0 && zdir == 0); //Must rotate. if all are 0, no rotation happens
 
         //apply rotation
-        direction = Quaternion.Euler(xdir * DeltaAngle, ydir * DeltaAngle, zdir * DeltaAngle) * direction;
+        Direction = Quaternion.Euler(xdir * DeltaAngle, ydir * DeltaAngle, zdir * DeltaAngle) * Direction;
     }
 
     private void ChangeMotion()

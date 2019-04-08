@@ -75,8 +75,8 @@ public class Atom : MonoBehaviour
                 gameObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 break;
         }
-        gameObject.transform.parent = agent.transform;
         gameObject.layer = agent.id + 8;
+        gameObject.transform.parent = agent.transform;
         return gameObject;
     }
     #endregion
@@ -166,9 +166,9 @@ public class Atom : MonoBehaviour
 
         joint.useMotor = true;
         joint.anchor = Vector3.zero;
-        joint.axis = details.direction;
+        joint.axis = details.Direction;
         JointMotor motor = joint.motor;
-        motor.targetVelocity = AtomDetails.MaxTorque * details.force;
+        motor.targetVelocity = AtomDetails.MaxTorque * details.Force;
         motor.force = 10; //hard coded for now because changing force doesn't have much effect empircally.
         motor.freeSpin = true;
         joint.motor = motor;
