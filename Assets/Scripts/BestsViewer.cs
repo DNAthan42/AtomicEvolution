@@ -22,6 +22,12 @@ public class BestsViewer : MonoBehaviour
 
         while ((next = reader.ReadLine()) != null)
         {
+            if (filedir.EndsWith(".genlog"))
+            {
+                string[] pieces = next.Split('#');
+                if (pieces[pieces.Length - 1] == "") continue;
+                next = pieces[pieces.Length - 1];
+            }
             list.Add(next);
         }
 
