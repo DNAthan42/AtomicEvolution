@@ -66,13 +66,44 @@ As with evolution in nature, this system intends to mimic the variation in struc
 As is shown below, this goal is somewhat met but the system itself is still too premature to be a comparable analog to natural selection.
 
 \section{Implementation}
-With the goal of moving as far as possible in each generation, an appropriate environment must first exist to evaluate within.
+With the goal of moving as far as possible in each generation, an appropriate environment is needed to evaluate in.
 Further, within the environment there are a list of features that must be included to support the evaluation.
 First and foremost is the ability to deserialize a given genotype into a phenotype, or agent, to be evaluated.
 Also needed is the inverse serialization ability.
 Then, agents need some physics simulator to operate within and source the evaluation of exactly how much distance has been covered.
+To this end, the Unity Engine is used as it provides a simple object instantiation scheme and a built-in physics simulation engine.
 
-To this end, Unity Engine is used 
+\subsection{Phenotypical Agent Structure}
+Unity's simple object instantiation scheme is used to create the agent's constituent atoms.
+Unity contains simple geometric shapes including spheres, cubes, and capsules.
+Atoms can be one of these three shapes, which are scaled individually to make all atoms approximately the same size.
+The scaling factor is different for each shape, as the shapes are different sizes by default.
+The factor is set such that each shape has no cross section with a width larger than 1 meter as defined by Unity's measurement system.
+This way, adjacent atoms can be instantiated 1 meter apart and do not overlap, as overlapping objects cause unexpected behaviour in the physics simulation.
+
+Agents themselves are collections of these atoms.
+Specifically, an agent is a 3-dimensional cubic grid, where each item in the grid can be either an atom or simply empty.
+Atoms adjacent to each other within the grid can be physically linked to each other with invisible joints. 
+These joints force the two connected atoms to be a static distance apart, mostly restriciting them from moving either closer or further apart.
+The distance between two joined atoms is not completely static though, as Unity's physics engine allows the joints to stretch, compress, and bend to a small degree.
+
+Each individual atom may either remain static or rotate around the center of its space in the grid.
+This is the main way that an agent is able to move, outside of gravity causing an unbalanced agent to topple.
+Further, the joint based structure combined with individual atom rotations allows for complex agent movement.
+A rotating atom attached to another atom causes the attached atom to leave it's initial space in the grid and orbit the rotating atom.
+Intuitively, this works like a fan.
+A center piece rotates in place, and the blades are forced in a cyclic motion around the center.
+The direction and force of rotation varies between atoms, with direction also controlling orientation for both static and non-static agents.
+
+\subsection{Genotypical Agent Structure}
+
+The genotypical structure of agents is very similar to the phenotypical instantiation.
+Agents are stored as 3-dimensional arrays with each index contain specific data about its corresponding atom.
+
+
+\subsection{Mutation System}
+
+\subsection{Evaluation System}
 
 \section{Results}
 
@@ -80,6 +111,9 @@ To this end, Unity Engine is used
 
 \section{Future Work}
 
+%different distance measurement (relative angle)
+%different terrain types
+%different evaluation point (center of mass)
 \section{Conclusion}
 
 \end{document}
