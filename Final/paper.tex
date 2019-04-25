@@ -109,20 +109,44 @@ The array is then flattened to a 1-dimensional equivalent.
 Each atom's json representation is then added to the agent's total serialized format, using semicolons to delimit the json strings.
 Deserialization simply reverses this process, retrieving the necessary information for each atom from the serialized string.
 
-The major reason for structuring agent's this way is that it is simpler to create the phenotype given this representation.
+The major reason for structuring agents this way is that it is simpler to create the phenotype given this representation.
 Stored as an array, detecting conflicting atoms is as simple as checking the index in question.
 This is crucial for agents that modify their own structure, as is outlined in 2.3.
 It is also a very simple representation to work with, although it does require more space than is aboslutely necessary.
 However, alternative approaches to indexing spaces in the array that also determine conflicting neighbours in 3-dimensions adds unnecessary complexity to the structure.
 
 Within the array, atoms are joined in a tree-based structure.
-Each agent has exactly one atom that is not joined to a parent atom, essentially creating a root node.
+Each agent has exactly one atom that is not joined to a \textit{parent} atom, essentially creating a root node.
 This root node can then be joined to each atom in its von Neumann neighbourhood.
+These \textit{children} can then further join to atoms in their neighbourhood, excluding their parent.
 The joints used work similarly to ball and socket joints, allowing full rotation around any axis but keeping distance between each atom constant.
-In this way, a \textit{parent} atom applies rotational force to its \textit{child} atoms, but not vice versa.
+Thus a \textit{parent} atom applies rotational force to its \textit{child} atoms, but not vice versa.
 This tree structure acyclically joins all atoms together, creating a single large agent.
 
 \subsection{Mutation System}
+This system mutates agents in two primary ways.
+First are \textit{Point Mutations} which modify the details of a particular atom.
+Second are \textit{Expansions} which control the creation of new atoms as part of the agent.
+Both mutations may apply to each atom at a given rate.
+There are seperate rates for point and expansion mutation which do not change over the system's runtime.
+
+Point mutations are relatively simple.
+If an atom is to be mutated, another random decision is made on which field is changed; either shape, motion, force, or direction.
+Each field is equally likely to be mutated, given the atom has been selected to mutate.
+Shape and Motion mutations simply select a different, random element from the set of possible values.
+Force is modified by a static delta which is equally likely to be added or subtracted from the force's current value.
+The possible values for the force are bounded by zero and another static maximum force parameter.
+
+Mutations to the atoms direction are more complicated however.
+Similar to how force changes, direction is modified by either adding or subtracting a static delta.
+This delta applies independently to each axe, and each axe may or may not rotate for any given point mutation.
+For example, one direction mutation may cause the atom to rotate around the x and y axes but not the z, while another rotates only around the z.
+A directional mutation must cause at least some rotation though.
+
+Expansions control how the agent can change its overall structure over time.
+If an atom is selected to expand, one of the atom's von Neumann neighbours will be checked for an existing atom.
+If an atom exists in the index checked, the expansion will fail and no mutation will occur.
+Otherwise, a new atom will be generated at random in that location, with the new atom being joined as a child to the mutated atom.
 
 \subsection{Evaluation System}
 
