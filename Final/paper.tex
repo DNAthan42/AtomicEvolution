@@ -98,8 +98,29 @@ The direction and force of rotation varies between atoms, with direction also co
 \subsection{Genotypical Agent Structure}
 
 The genotypical structure of agents is very similar to the phenotypical instantiation.
-Agents are stored as 3-dimensional arrays with each index contain specific data about its corresponding atom.
+Agents are stored as 3-dimensional arrays with each index containing specific data about its corresponding atom.
+Each atom is stored as a simple collection of four values; 
+two integers for the shape and motion types, a float for the motion's force, and a vector containing the rotation direction.
 
+Agents are structured this way partly because it makes serialization and deserialization simpler.
+Serialization of agents converts the array of atoms into one long string.
+First, atoms are serialized using Unity's built in serialization tools which simply convert the four fields described above into json format.
+The array is then flattened to a 1-dimensional equivalent.
+Each atom's json representation is then added to the agent's total serialized format, using semicolons to delimit the json strings.
+Deserialization simply reverses this process, retrieving the necessary information for each atom from the serialized string.
+
+The major reason for structuring agent's this way is that it is simpler to create the phenotype given this representation.
+Stored as an array, detecting conflicting atoms is as simple as checking the index in question.
+This is crucial for agents that modify their own structure, as is outlined in 2.3.
+It is also a very simple representation to work with, although it does require more space than is aboslutely necessary.
+However, alternative approaches to indexing spaces in the array that also determine conflicting neighbours in 3-dimensions adds unnecessary complexity to the structure.
+
+Within the array, atoms are joined in a tree-based structure.
+Each agent has exactly one atom that is not joined to a parent atom, essentially creating a root node.
+This root node can then be joined to each atom in its von Neumann neighbourhood.
+The joints used work similarly to ball and socket joints, allowing full rotation around any axis but keeping distance between each atom constant.
+In this way, a \textit{parent} atom applies rotational force to its \textit{child} atoms, but not vice versa.
+This tree structure acyclically joins all atoms together, creating a single large agent.
 
 \subsection{Mutation System}
 
@@ -114,6 +135,7 @@ Agents are stored as 3-dimensional arrays with each index contain specific data 
 %different distance measurement (relative angle)
 %different terrain types
 %different evaluation point (center of mass)
+%cyclic joints in agent structure.
 \section{Conclusion}
 
 \end{document}
